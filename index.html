@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Search App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>amazone</h1>
+        <div id="search-bar-container">
+            <input type="text" placeholder="Movie..." value="Joker" id="movie">
+            <button id="search-button">Search</button>
+        </div>
+    </header>
+
+    <main>
+        <div id="image-poster">
+            <img id="poster" alt="Movie-poster">
+            <div>
+                <h3 id="movie-name"></h3>
+                <div id="movie-data">
+                    <p class="pdata" id="release-date"></p>
+                    <p class="pdata" id="imdb-rating"></p>
+                    <p class="pdata" id="genre"></p>
+                    <p class="pdata" id="directed-by"></p>
+                    <p class="pdata" id="written-by"></p>
+                    <p class="pdata" id="cast"></p>
+                    <p class="pdata" id="plot"></p>
+                    <p class="pdata" id="run"></p>
+                    <p class="pdata" id="language"></p>
+                    <p class="pdata" id="box-office"></p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p class="footer-p">Powered by <a id='omdb-link' href="https://www.omdbapi.com/" target="_blank">OMDb API</a>.
+            </p>
+            <p class="footer-p">Copyright &copy; 2024. All rights reserved.</p>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
