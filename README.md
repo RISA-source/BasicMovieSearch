@@ -33,6 +33,3 @@ Uses the [OMDb API](https://www.omdbapi.com/) to fetch movie data. Requires a va
 - Click "Search" or press Enter
 - Movie details will be displayed with poster as background
 
-## Notes
-
-The API URL must use HTTPS when deployed to GitHub Pages or any HTTPS site to avoid mixed content errors.
