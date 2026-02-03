@@ -1,4 +1,4 @@
-const api_key = `50d63ef5`
+const api_key = `3da926e9`
 
 async function fetchData(movie) {
     try {
