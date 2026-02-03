@@ -2,7 +2,7 @@ const api_key = `3da926e9`
 
 async function fetchData(movie) {
     try {
-        const response = await fetch(`http://www.omdbapi.com/?t=${movie}&apikey=${api_key}`)
+        const response = await fetch(`https://www.omdbapi.com/?t=${movie}&apikey=${api_key}`)
         const data = await response.json()
         console.log(data)
 
