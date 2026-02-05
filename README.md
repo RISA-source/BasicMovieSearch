@@ -4,7 +4,7 @@ A simple web application to search movies and display detailed information using
 
 ## Demo
 
-[https://risa-source.github.io/BasicMovieSearch/]
+[Live Demo](https://risa-source.github.io/BasicMovieSearch/)
 
 ## Features
 
