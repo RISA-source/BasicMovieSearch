@@ -22,7 +22,6 @@ A modern web application for searching movies and displaying comprehensive infor
 - Glass-morphism UI with backdrop blur effects
 - Smooth animations and transitions
 - Professional cinema-themed aesthetic
-- Light/Dark theme toggle with preference persistence
 
 ### Technical Features
 - Debounced autocomplete for optimal API usage
@@ -103,7 +102,6 @@ npx http-server
 4. Browse comprehensive movie details including ratings, cast, and synopsis
 5. Click on similar movie recommendations to explore related content
 6. Access search history by clicking the search input
-7. Toggle between light and dark themes using the theme button
 
 ## API Reference
 
@@ -169,12 +167,6 @@ MIT License - see [LICENSE](LICENSE) file for details.
 - Icons from [Google Material Symbols](https://fonts.google.com/icons)
 - Styling framework: [Tailwind CSS](https://tailwindcss.com/)
 - Default demonstration movie: "Joker" (2019)
-
-## Contact
-
-Rishi Saraff - [@RISA-source](https://github.com/RISA-source)
-
-Project Link: [https://github.com/RISA-source/BasicMovieSearch](https://github.com/RISA-source/BasicMovieSearch)
 
 ---
 
