@@ -1,5 +1,40 @@
 const api_key = `3da926e9`
 
+// Toast Notification System
+function showToast(type, title, message, duration = 3000) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    
+    const icons = {
+        success: '✓',
+        error: '✕',
+        warning: '⚠',
+        info: 'ℹ'
+    };
+    
+    toast.innerHTML = `
+        <div class="toast-icon">${icons[type]}</div>
+        <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()">
+            <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+        </button>
+        <div class="toast-progress"></div>
+    `;
+    
+    container.appendChild(toast);
+    
+    // Auto remove after duration
+    setTimeout(() => {
+        toast.style.animation = 'slideIn 0.3s ease-out reverse';
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
+}
+
+
 // Show loading spinner
 function showLoading() {
     document.getElementById('loading').classList.remove('hidden');
@@ -195,7 +230,7 @@ async function fetchData(movie) {
         console.log('API Response:', data)
 
         if (data.Response === "False") {
-            alert(`Error: ${data.Error}`);
+            showToast('error', 'Movie Not Found', data.Error || 'Could not find the movie you searched for.');
             hideLoading();
             return;
         }
@@ -227,11 +262,14 @@ async function fetchData(movie) {
         // Update page title
         document.title = `amazone | ${data.Title} (${data.Year})`;
 
+        // Show success toast
+        showToast('success', 'Movie Loaded', `${data.Title} (${data.Year})`);
+
         hideLoading();
 
     } catch (error) {
         console.error('Fetch error:', error);
-        alert('Error fetching movie data. Please try again.');
+        showToast('error', 'Connection Error', 'Unable to fetch movie data. Please check your connection and try again.');
         hideLoading();
     }
 }
@@ -285,9 +323,8 @@ document.addEventListener('click', (event) => {
 // Clear history button
 document.getElementById('clear-history').addEventListener('click', (e) => {
     e.stopPropagation();
-    if (confirm('Clear all search history?')) {
-        clearHistory();
-    }
+    clearHistory();
+    showToast('info', 'History Cleared', 'Your search history has been cleared.');
 });
 
 // Enter key search
@@ -299,7 +336,7 @@ document.getElementById('movie').addEventListener('keydown', function (event) {
             hideAutocompleteDropdown();
             fetchData(movie);
         } else {
-            alert('Please enter a movie name.');
+            showToast('warning', 'Empty Search', 'Please enter a movie name to search.');
         }
     }
 });
@@ -312,6 +349,6 @@ document.getElementById('search-button').addEventListener('click', () => {
         hideAutocompleteDropdown();
         fetchData(movie);
     } else {
-        alert('Please enter a movie name.');
+        showToast('warning', 'Empty Search', 'Please enter a movie name to search.');
     }
 });
