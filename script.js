@@ -1,6 +1,20 @@
 const api_key = `3da926e9`
 
+// Show loading spinner
+function showLoading() {
+    const loader = document.getElementById('loading');
+    loader.classList.remove('hidden');
+}
+
+// Hide loading spinner
+function hideLoading() {
+    const loader = document.getElementById('loading');
+    loader.classList.add('hidden');
+}
+
 async function fetchData(movie) {
+    showLoading(); // Show spinner when fetch starts
+    
     try {
         console.log('Fetching data for:', movie);
         const response = await fetch(`https://www.omdbapi.com/?t=${movie}&apikey=${api_key}`)
@@ -14,6 +28,7 @@ async function fetchData(movie) {
 
         if (data.Response === "False") {
             alert(`Error: ${data.Error}`);
+            hideLoading(); // Hide spinner on error
             return;
         }
 
@@ -48,9 +63,12 @@ async function fetchData(movie) {
         document.body.style.backgroundSize = "cover";
         document.body.style.backgroundPosition = "center";
 
+        hideLoading(); // Hide spinner when data is loaded
+
     } catch (error) {
         console.error('Fetch error:', error);
         alert('Error fetching movie data. Please try again.');
+        hideLoading(); // Hide spinner on error
     }
 }
 

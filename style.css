@@ -24,6 +24,7 @@ header{
     position: fixed;
     top: 0;
     width: 100%;
+    z-index: 100;
 }
 
 #search-bar-container{
@@ -46,6 +47,8 @@ header{
 #search-button{
     background-color: #00a8e1;
     color: #000000;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 #search-button:hover{
@@ -58,12 +61,60 @@ header{
     color: aliceblue;
 }
 
+/* Loading Spinner Styles */
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.loading.hidden {
+    display: none;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 168, 225, 0.2);
+    border-top: 5px solid #00a8e1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading p {
+    margin-top: 20px;
+    color: #00a8e1;
+    font-size: 18px;
+    font-weight: 500;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
 h3{
     margin-top: 0%;
     font-size: 32px;
     font-weight: 500;
     margin-left: 20px;
 }
+
 main{
     display: flex;
     flex-direction: column;
