@@ -2,14 +2,20 @@ const api_key = `3da926e9`
 
 // Show loading spinner
 function showLoading() {
-    const loader = document.getElementById('loading');
-    loader.classList.remove('hidden');
+    document.getElementById('loading').classList.remove('hidden');
 }
 
 // Hide loading spinner
 function hideLoading() {
-    const loader = document.getElementById('loading');
-    loader.classList.add('hidden');
+    document.getElementById('loading').classList.add('hidden');
+}
+
+// Update hazy background with poster
+function updateBackground(posterUrl) {
+    const hazyBg = document.getElementById('hazy-bg');
+    if (posterUrl && posterUrl !== 'N/A') {
+        hazyBg.style.backgroundImage = `linear-gradient(rgba(10, 10, 10, 0.6), rgba(10, 10, 10, 0.9)), url('${posterUrl}')`;
+    }
 }
 
 // Search History Functions
@@ -20,20 +26,10 @@ function getSearchHistory() {
 
 function saveToHistory(movieTitle) {
     let history = getSearchHistory();
-    
-    // Remove if already exists (to move to top)
     history = history.filter(item => item.toLowerCase() !== movieTitle.toLowerCase());
-    
-    // Add to beginning of array
     history.unshift(movieTitle);
-    
-    // Keep only last 5 searches
     history = history.slice(0, 5);
-    
-    // Save to localStorage
     localStorage.setItem('movieSearchHistory', JSON.stringify(history));
-    
-    // Update display
     displayHistory();
 }
 
@@ -52,7 +48,7 @@ function displayHistory() {
         const li = document.createElement('li');
         li.textContent = movie;
         li.addEventListener('click', () => {
-            elements.movieName.value = movie;
+            document.getElementById('movie').value = movie;
             hideHistoryDropdown();
             fetchData(movie);
         });
@@ -66,18 +62,17 @@ function clearHistory() {
 }
 
 function showHistoryDropdown() {
-    const dropdown = document.getElementById('history-dropdown');
-    dropdown.classList.remove('hidden');
+    document.getElementById('history-dropdown').classList.remove('hidden');
     displayHistory();
 }
 
 function hideHistoryDropdown() {
-    const dropdown = document.getElementById('history-dropdown');
-    dropdown.classList.add('hidden');
+    document.getElementById('history-dropdown').classList.add('hidden');
 }
 
+// Fetch Movie Data
 async function fetchData(movie) {
-    showLoading(); // Show spinner when fetch starts
+    showLoading();
     
     try {
         console.log('Fetching data for:', movie);
@@ -92,85 +87,65 @@ async function fetchData(movie) {
 
         if (data.Response === "False") {
             alert(`Error: ${data.Error}`);
-            hideLoading(); // Hide spinner on error
+            hideLoading();
             return;
         }
 
         // Save successful search to history
         saveToHistory(movie);
 
-        const name = data.Title
-        const postLink = data.Poster
-        const genre = data.Genre
-        const plot = data.Plot
-        const language = data.Language
-        const imdbRating = data.Ratings && data.Ratings[0] ? data.Ratings[0].Value : 'N/A'
-        const release = data.Released
-        const director = data.Director
-        const writer = data.Writer
-        const cast = data.Actors
-        const run = data.Runtime
-        const boxOffice = data.BoxOffice || 'N/A'
+        // Update background
+        updateBackground(data.Poster);
 
-        elements.title.innerText = `${name}`
-        elements.poster.src = postLink
-        elements.genre.innerText = `Genre: ${genre}`
-        elements.plot.innerText = `Synopsis: ${plot}`
-        elements.language.innerText = `Language: ${language}`
-        elements.imdbRating.innerText = `IMDB Rating: ${imdbRating}`
-        elements.releaseDate.innerText = `Release Date: ${release}`
-        elements.directedBy.innerText = `Directed By: ${director}`
-        elements.writtenBy.innerText = `Written By: ${writer}`
-        elements.cast.innerText = `Cast: ${cast}`
-        elements.runTime.innerText = `Runtime: ${run}`
-        elements.boxOffice.innerHTML = `Box Office: ${boxOffice}`
+        // Update movie details
+        document.getElementById('movie-name').textContent = data.Title;
+        document.getElementById('poster').src = data.Poster;
+        document.getElementById('genre').textContent = data.Genre;
+        document.getElementById('plot').textContent = data.Plot;
+        document.getElementById('language').textContent = data.Language;
+        
+        const imdbRating = data.Ratings && data.Ratings[0] ? data.Ratings[0].Value.split('/')[0] : 'N/A';
+        document.getElementById('imdb-rating').textContent = imdbRating;
+        
+        document.getElementById('release-date').textContent = data.Released;
+        document.getElementById('directed-by').textContent = data.Director;
+        document.getElementById('written-by').textContent = data.Writer;
+        document.getElementById('cast').textContent = data.Actors;
+        document.getElementById('run').textContent = data.Runtime;
+        document.getElementById('box-office').textContent = data.BoxOffice || 'N/A';
+        
+        // Year and Runtime in header
+        document.getElementById('year-runtime').textContent = `${data.Year} • ${data.Runtime}`;
 
-        document.body.style.backgroundImage = `url('${postLink}')`;
-        document.body.style.backgroundRepeat = "no-repeat";
-        document.body.style.backgroundSize = "cover";
-        document.body.style.backgroundPosition = "center";
+        // Update page title
+        document.title = `amazone | ${data.Title} (${data.Year})`;
 
-        hideLoading(); // Hide spinner when data is loaded
+        hideLoading();
 
     } catch (error) {
         console.error('Fetch error:', error);
         alert('Error fetching movie data. Please try again.');
-        hideLoading(); // Hide spinner on error
+        hideLoading();
     }
 }
 
-const elements = {
-    movieName: document.getElementById('movie'),
-    searchButton: document.getElementById('search-button'),
-    title: document.getElementById('movie-name'),
-    poster: document.getElementById('poster'),
-    genre: document.getElementById('genre'),
-    plot: document.getElementById('plot'),
-    language: document.getElementById('language'),
-    imdbRating: document.getElementById('imdb-rating'),
-    releaseDate: document.getElementById('release-date'),
-    directedBy: document.getElementById('directed-by'),
-    writtenBy: document.getElementById('written-by'),
-    cast: document.getElementById('cast'),
-    runTime: document.getElementById('run'),
-    boxOffice: document.getElementById('box-office')
-}
-
-// Wait for DOM to be fully loaded
+// Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, fetching initial movie...');
     fetchData('Joker');
 });
 
 // Show history dropdown when input is focused
-elements.movieName.addEventListener('focus', () => {
+document.getElementById('movie').addEventListener('focus', () => {
     showHistoryDropdown();
 });
 
 // Hide history dropdown when clicking outside
 document.addEventListener('click', (event) => {
-    const searchWrapper = document.querySelector('.search-wrapper');
-    if (!searchWrapper.contains(event.target)) {
+    const searchInput = document.getElementById('movie');
+    const historyDropdown = document.getElementById('history-dropdown');
+    
+    if (!searchInput.contains(event.target) && !historyDropdown.contains(event.target)) {
         hideHistoryDropdown();
     }
 });
@@ -184,14 +159,12 @@ document.getElementById('clear-history').addEventListener('click', (e) => {
 });
 
 // Enter key search
-const inputField = document.getElementById('movie');
-inputField.addEventListener('keydown', function (event) {
+document.getElementById('movie').addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
-        console.log('Enter key pressed in input field');
         const movie = document.getElementById('movie').value.trim();
         if (movie) {
             hideHistoryDropdown();
-            fetchData(movie)
+            fetchData(movie);
         } else {
             alert('Please enter a movie name.');
         }
@@ -199,12 +172,12 @@ inputField.addEventListener('keydown', function (event) {
 });
 
 // Search button click
-elements.searchButton.addEventListener('click', () => {
+document.getElementById('search-button').addEventListener('click', () => {
     const movie = document.getElementById('movie').value.trim();
     if (movie) {
         hideHistoryDropdown();
-        fetchData(movie)
+        fetchData(movie);
     } else {
         alert('Please enter a movie name.');
     }
-})
+});

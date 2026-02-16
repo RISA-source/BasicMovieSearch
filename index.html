@@ -1,66 +1,182 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>Movie Search App</title>
+    <title>amazone | Movie Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ee2b34",
+                        "background-dark": "#0a0a0a",
+                        "surface": "#1a1a1a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
     <link rel="stylesheet" href="css/style.css">
 </head>
+<body class="bg-background-dark font-display text-white min-h-screen">
+    <!-- Hazy Background -->
+    <div id="hazy-bg" class="hazy-bg"></div>
 
-<body>
     <!-- Loading Spinner -->
     <div id="loading" class="loading hidden">
         <div class="spinner"></div>
         <p>Searching for movie...</p>
     </div>
 
-    <header>
-        <h1>amazone</h1>
-        <div id="search-bar-container">
-            <div class="search-wrapper">
-                <input type="text" placeholder="Movie..." value="Joker" id="movie" autocomplete="off">
-                <!-- Search History Dropdown -->
-                <div id="history-dropdown" class="history-dropdown hidden">
-                    <div class="history-header">
-                        <span>Recent Searches</span>
-                        <button id="clear-history" class="clear-btn">Clear</button>
+    <!-- Header -->
+    <header class="sticky top-0 z-50 w-full border-b border-white/10 bg-background-dark/80 backdrop-blur-md px-6 md:px-12 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-8">
+            <div class="flex items-center gap-2 group cursor-pointer">
+                <div class="size-8 bg-primary rounded flex items-center justify-center text-white shadow-lg shadow-primary/20">
+                    <span class="material-symbols-outlined text-2xl">movie</span>
+                </div>
+                <h1 class="text-2xl font-black tracking-tighter text-white uppercase italic">amazone</h1>
+            </div>
+            
+            <div class="flex-1 max-w-xl">
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span class="material-symbols-outlined text-white/40 group-focus-within:text-primary transition-colors">search</span>
                     </div>
-                    <ul id="history-list"></ul>
+                    <input 
+                        id="movie" 
+                        class="block w-full pl-10 pr-3 py-2 border border-white/10 rounded-lg leading-5 bg-white/5 placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent sm:text-sm transition-all text-white" 
+                        placeholder="Search movies..." 
+                        type="text"
+                        value="Joker"
+                        autocomplete="off"
+                    />
+                    <!-- History Dropdown -->
+                    <div id="history-dropdown" class="history-dropdown hidden">
+                        <div class="history-header">
+                            <span>Recent Searches</span>
+                            <button id="clear-history" class="clear-btn">Clear</button>
+                        </div>
+                        <ul id="history-list"></ul>
+                    </div>
                 </div>
             </div>
-            <button id="search-button">Search</button>
+
+            <button id="search-button" class="hidden md:block bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-lg transition-all shadow-lg shadow-primary/20">
+                Search
+            </button>
         </div>
     </header>
 
-    <main>
-        <div id="image-poster">
-            <img id="poster" alt="Movie-poster">
-            <div>
-                <h3 id="movie-name"></h3>
-                <div id="movie-data">
-                    <p class="pdata" id="release-date"></p>
-                    <p class="pdata" id="imdb-rating"></p>
-                    <p class="pdata" id="genre"></p>
-                    <p class="pdata" id="directed-by"></p>
-                    <p class="pdata" id="written-by"></p>
-                    <p class="pdata" id="cast"></p>
-                    <p class="pdata" id="plot"></p>
-                    <p class="pdata" id="run"></p>
-                    <p class="pdata" id="language"></p>
-                    <p class="pdata" id="box-office"></p>
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center p-6 md:p-12">
+        <div class="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            <!-- Movie Poster -->
+            <div class="lg:col-span-4 flex justify-center lg:justify-start">
+                <div class="relative group w-full max-w-[360px]">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-primary to-orange-600 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    <div class="relative bg-background-dark rounded-xl overflow-hidden shadow-2xl">
+                        <img 
+                            id="poster" 
+                            alt="Movie Poster" 
+                            class="w-full h-auto object-cover transform transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <div class="absolute bottom-4 right-4 bg-primary px-3 py-1 rounded text-xs font-bold uppercase tracking-widest shadow-lg">
+                            HD
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Movie Details Card -->
+            <div class="lg:col-span-8 space-y-6">
+                <div class="glass-panel rounded-xl p-8 md:p-10 shadow-2xl">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+                        <div>
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="bg-primary/20 text-primary text-xs font-bold px-2 py-0.5 rounded border border-primary/30">MOVIE</span>
+                                <span class="text-white/60 text-sm" id="year-runtime"></span>
+                            </div>
+                            <h2 id="movie-name" class="text-5xl md:text-7xl font-black tracking-tight text-white mb-2 leading-none uppercase"></h2>
+                            <p id="genre" class="text-primary text-lg font-medium"></p>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="material-symbols-outlined text-yellow-500 fill-1">star</span>
+                                <span id="imdb-rating" class="text-3xl font-bold"></span>
+                                <span class="text-white/40 font-medium">/10</span>
+                            </div>
+                            <span class="text-xs text-white/40 uppercase tracking-widest">IMDB Rating</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
+                            <p class="text-white/40 text-xs uppercase tracking-wider mb-1">Release Date</p>
+                            <p id="release-date" class="font-semibold"></p>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
+                            <p class="text-white/40 text-xs uppercase tracking-wider mb-1">Box Office</p>
+                            <p id="box-office" class="font-semibold text-green-400"></p>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
+                            <p class="text-white/40 text-xs uppercase tracking-wider mb-1">Language</p>
+                            <p id="language" class="font-semibold"></p>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
+                            <p class="text-white/40 text-xs uppercase tracking-wider mb-1">Runtime</p>
+                            <p id="run" class="font-semibold text-primary"></p>
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">subject</span>
+                            Synopsis
+                        </h3>
+                        <p id="plot" class="text-white/80 leading-relaxed text-lg italic"></p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-white/10">
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-white/40 text-sm font-bold uppercase tracking-wider mb-1">Directed By</h4>
+                                <p id="directed-by" class="text-white font-medium"></p>
+                            </div>
+                            <div>
+                                <h4 class="text-white/40 text-sm font-bold uppercase tracking-wider mb-1">Written By</h4>
+                                <p id="written-by" class="text-white font-medium"></p>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-white/40 text-sm font-bold uppercase tracking-wider mb-1">Cast</h4>
+                            <p id="cast" class="text-white font-medium leading-relaxed"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <footer>
-            <p class="footer-p">Powered by <a id='omdb-link' href="https://www.omdbapi.com/" target="_blank">OMDb API</a>.
-            </p>
-            <p class="footer-p">Copyright &copy; 2024. All rights reserved.</p>
-        </footer>
     </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto w-full py-8 px-6 md:px-12 bg-background-dark/90 backdrop-blur-sm border-t border-white/5">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-white/40 text-sm">
+            <div class="flex items-center gap-4">
+                <span class="font-bold tracking-tighter text-white/60">amazone</span>
+                <span class="hidden md:block">|</span>
+                <p>Powered by <a id='omdb-link' href="https://www.omdbapi.com/" target="_blank" class="text-primary hover:text-primary/80 transition-colors">OMDb API</a>. Copyright © 2024. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
 
     <script src="js/script.js"></script>
 </body>
-
 </html>
