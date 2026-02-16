@@ -70,6 +70,81 @@ function hideHistoryDropdown() {
     document.getElementById('history-dropdown').classList.add('hidden');
 }
 
+// Autocomplete Functions
+let autocompleteTimeout;
+
+function showAutocompleteDropdown() {
+    document.getElementById('autocomplete-dropdown').classList.remove('hidden');
+    hideHistoryDropdown();
+}
+
+function hideAutocompleteDropdown() {
+    document.getElementById('autocomplete-dropdown').classList.add('hidden');
+}
+
+async function fetchAutocompleteSuggestions(query) {
+    if (query.length < 2) {
+        hideAutocompleteDropdown();
+        return;
+    }
+
+    const autocompleteList = document.getElementById('autocomplete-list');
+    autocompleteList.innerHTML = '<li class="autocomplete-loading">Searching...</li>';
+    showAutocompleteDropdown();
+
+    try {
+        const response = await fetch(`https://www.omdbapi.com/?s=${query}&apikey=${api_key}`);
+        const data = await response.json();
+
+        if (data.Response === "False") {
+            autocompleteList.innerHTML = '<li class="autocomplete-no-results">No movies found</li>';
+            return;
+        }
+
+        autocompleteList.innerHTML = '';
+        
+        // Show first 6 results
+        data.Search.slice(0, 6).forEach(movie => {
+            const li = document.createElement('li');
+            
+            const poster = document.createElement('img');
+            poster.className = 'movie-poster';
+            poster.src = movie.Poster !== 'N/A' ? movie.Poster : 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="60"><rect width="40" height="60" fill="%23333"/><text x="50%" y="50%" fill="%23666" text-anchor="middle" dy=".3em" font-size="10">No Image</text></svg>';
+            poster.alt = movie.Title;
+            
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'movie-info';
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'movie-title';
+            titleDiv.textContent = movie.Title;
+            
+            const yearDiv = document.createElement('div');
+            yearDiv.className = 'movie-year';
+            yearDiv.textContent = `${movie.Year} • ${movie.Type}`;
+            
+            infoDiv.appendChild(titleDiv);
+            infoDiv.appendChild(yearDiv);
+            
+            li.appendChild(poster);
+            li.appendChild(infoDiv);
+            
+            li.addEventListener('click', () => {
+                document.getElementById('movie').value = movie.Title;
+                hideAutocompleteDropdown();
+                fetchData(movie.Title);
+            });
+            
+            autocompleteList.appendChild(li);
+        });
+
+    } catch (error) {
+        console.error('Autocomplete error:', error);
+        autocompleteList.innerHTML = '<li class="autocomplete-no-results">Error loading suggestions</li>';
+    }
+}
+
+
 // Fetch Movie Data
 async function fetchData(movie) {
     showLoading();
@@ -137,16 +212,41 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Show history dropdown when input is focused
 document.getElementById('movie').addEventListener('focus', () => {
-    showHistoryDropdown();
+    const inputValue = document.getElementById('movie').value.trim();
+    if (inputValue.length === 0) {
+        showHistoryDropdown();
+    }
 });
 
-// Hide history dropdown when clicking outside
+// Autocomplete on input
+document.getElementById('movie').addEventListener('input', (e) => {
+    const query = e.target.value.trim();
+    
+    // Clear previous timeout
+    clearTimeout(autocompleteTimeout);
+    
+    if (query.length === 0) {
+        hideAutocompleteDropdown();
+        return;
+    }
+    
+    // Debounce: wait 300ms after user stops typing
+    autocompleteTimeout = setTimeout(() => {
+        fetchAutocompleteSuggestions(query);
+    }, 300);
+});
+
+// Hide dropdowns when clicking outside
 document.addEventListener('click', (event) => {
     const searchInput = document.getElementById('movie');
     const historyDropdown = document.getElementById('history-dropdown');
+    const autocompleteDropdown = document.getElementById('autocomplete-dropdown');
     
-    if (!searchInput.contains(event.target) && !historyDropdown.contains(event.target)) {
+    if (!searchInput.contains(event.target) && 
+        !historyDropdown.contains(event.target) && 
+        !autocompleteDropdown.contains(event.target)) {
         hideHistoryDropdown();
+        hideAutocompleteDropdown();
     }
 });
 
@@ -164,6 +264,7 @@ document.getElementById('movie').addEventListener('keydown', function (event) {
         const movie = document.getElementById('movie').value.trim();
         if (movie) {
             hideHistoryDropdown();
+            hideAutocompleteDropdown();
             fetchData(movie);
         } else {
             alert('Please enter a movie name.');
@@ -176,6 +277,7 @@ document.getElementById('search-button').addEventListener('click', () => {
     const movie = document.getElementById('movie').value.trim();
     if (movie) {
         hideHistoryDropdown();
+        hideAutocompleteDropdown();
         fetchData(movie);
     } else {
         alert('Please enter a movie name.');
