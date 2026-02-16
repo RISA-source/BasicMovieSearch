@@ -103,66 +103,70 @@
             <!-- Movie Details Card -->
             <div class="lg:col-span-8 space-y-6">
                 <div class="glass-panel rounded-xl p-8 md:p-10 shadow-2xl">
-                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
-                        <div>
-                            <div class="flex items-center gap-3 mb-2">
-                                <span class="bg-primary/20 text-primary text-xs font-bold px-2 py-0.5 rounded border border-primary/30">MOVIE</span>
-                                <span class="text-white/60 text-sm" id="year-runtime"></span>
-                            </div>
-                            <h2 id="movie-name" class="text-5xl md:text-7xl font-black tracking-tight text-white mb-2 leading-none uppercase"></h2>
-                            <p id="genre" class="text-primary text-lg font-medium"></p>
+                    <div class="mb-6">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="bg-primary/20 text-primary text-xs font-bold px-2 py-0.5 rounded border border-primary/30">MOVIE</span>
+                            <span class="text-white/60 text-sm" id="year-runtime"></span>
                         </div>
-                        <div class="flex flex-col items-end">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="material-symbols-outlined text-yellow-500 fill-1">star</span>
-                                <span id="imdb-rating" class="text-3xl font-bold"></span>
-                                <span class="text-white/40 font-medium">/10</span>
+                        <h2 id="movie-name" class="text-4xl md:text-5xl font-black tracking-tight text-white mb-3 leading-tight uppercase"></h2>
+                        <p id="genre" class="text-primary text-base font-medium mb-4"></p>
+                        
+                        <!-- Ratings Row -->
+                        <div class="flex items-center gap-4 flex-wrap">
+                            <!-- IMDB Rating -->
+                            <div class="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-lg border border-white/10">
+                                <span class="material-symbols-outlined text-yellow-500 fill-1 text-xl">star</span>
+                                <div class="flex flex-col">
+                                    <span id="imdb-rating" class="text-lg font-bold leading-none">N/A</span>
+                                    <span class="text-white/40 text-xs uppercase">IMDB</span>
+                                </div>
                             </div>
-                            <span class="text-xs text-white/40 uppercase tracking-widest">IMDB Rating</span>
+                            <!-- Rotten Tomatoes Rating -->
+                            <div id="rt-rating-container" class="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-lg border border-white/10 hidden">
+                                <span class="text-xl">🍅</span>
+                                <div class="flex flex-col">
+                                    <span id="rt-rating" class="text-lg font-bold leading-none text-red-500">N/A</span>
+                                    <span class="text-white/40 text-xs uppercase">RT</span>
+                                </div>
+                            </div>
+                            <!-- Metacritic Rating -->
+                            <div id="metacritic-rating-container" class="flex items-center gap-2 bg-white/5 px-4 py-2 rounded-lg border border-white/10 hidden">
+                                <div class="flex flex-col">
+                                    <span id="metacritic-rating" class="text-lg font-bold leading-none text-green-400">N/A</span>
+                                    <span class="text-white/40 text-xs uppercase">Metacritic</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8">
                         <div class="bg-white/5 p-4 rounded-lg border border-white/5">
-                            <p class="text-white/40 text-xs uppercase tracking-wider mb-1">Release Date</p>
-                            <p id="release-date" class="font-semibold"></p>
-                        </div>
-                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
-                            <p class="text-white/40 text-xs uppercase tracking-wider mb-1">Box Office</p>
-                            <p id="box-office" class="font-semibold text-green-400"></p>
-                        </div>
-                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
-                            <p class="text-white/40 text-xs uppercase tracking-wider mb-1">Language</p>
-                            <p id="language" class="font-semibold"></p>
+                            <p class="text-white/40 text-xs uppercase tracking-wider mb-1">Release</p>
+                            <p id="release-date" class="font-semibold text-sm"></p>
                         </div>
                         <div class="bg-white/5 p-4 rounded-lg border border-white/5">
                             <p class="text-white/40 text-xs uppercase tracking-wider mb-1">Runtime</p>
-                            <p id="run" class="font-semibold text-primary"></p>
+                            <p id="run" class="font-semibold text-primary text-sm"></p>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-lg border border-white/5">
+                            <p class="text-white/40 text-xs uppercase tracking-wider mb-1">Box Office</p>
+                            <p id="box-office" class="font-semibold text-green-400 text-sm"></p>
                         </div>
                     </div>
 
-                    <div class="mb-8">
-                        <h3 class="text-lg font-bold mb-3 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary">subject</span>
-                            Synopsis
-                        </h3>
-                        <p id="plot" class="text-white/80 leading-relaxed text-lg italic"></p>
+                    <div class="mb-6">
+                        <h3 class="text-base font-bold mb-2 text-white/60 uppercase tracking-wider">Synopsis</h3>
+                        <p id="plot" class="text-white/90 leading-relaxed"></p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-white/10">
-                        <div class="space-y-4">
-                            <div>
-                                <h4 class="text-white/40 text-sm font-bold uppercase tracking-wider mb-1">Directed By</h4>
-                                <p id="directed-by" class="text-white font-medium"></p>
-                            </div>
-                            <div>
-                                <h4 class="text-white/40 text-sm font-bold uppercase tracking-wider mb-1">Written By</h4>
-                                <p id="written-by" class="text-white font-medium"></p>
-                            </div>
+                    <div class="space-y-3 pt-6 border-t border-white/10">
+                        <div>
+                            <h4 class="text-white/40 text-xs font-bold uppercase tracking-wider mb-1">Director</h4>
+                            <p id="directed-by" class="text-white font-medium text-sm"></p>
                         </div>
                         <div>
-                            <h4 class="text-white/40 text-sm font-bold uppercase tracking-wider mb-1">Cast</h4>
-                            <p id="cast" class="text-white font-medium leading-relaxed"></p>
+                            <h4 class="text-white/40 text-xs font-bold uppercase tracking-wider mb-1">Cast</h4>
+                            <p id="cast" class="text-white font-medium text-sm leading-relaxed"></p>
                         </div>
                     </div>
                 </div>

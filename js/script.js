@@ -144,6 +144,40 @@ async function fetchAutocompleteSuggestions(query) {
     }
 }
 
+// Update Ratings Display
+function updateRatings(ratings) {
+    // Default values
+    document.getElementById('imdb-rating').textContent = 'N/A';
+    document.getElementById('rt-rating').textContent = 'N/A';
+    document.getElementById('metacritic-rating').textContent = 'N/A';
+    
+    // Hide all by default
+    document.getElementById('rt-rating-container').classList.add('hidden');
+    document.getElementById('metacritic-rating-container').classList.add('hidden');
+    
+    if (!ratings || ratings.length === 0) return;
+    
+    ratings.forEach(rating => {
+        const source = rating.Source;
+        const value = rating.Value;
+        
+        if (source === 'Internet Movie Database') {
+            const imdbValue = value.split('/')[0];
+            document.getElementById('imdb-rating').textContent = imdbValue;
+        } 
+        else if (source === 'Rotten Tomatoes') {
+            document.getElementById('rt-rating').textContent = value;
+            document.getElementById('rt-rating-container').classList.remove('hidden');
+        } 
+        else if (source === 'Metacritic') {
+            const metacriticValue = value.split('/')[0];
+            document.getElementById('metacritic-rating').textContent = metacriticValue;
+            document.getElementById('metacritic-rating-container').classList.remove('hidden');
+        }
+    });
+}
+
+
 
 // Fetch Movie Data
 async function fetchData(movie) {
@@ -177,14 +211,12 @@ async function fetchData(movie) {
         document.getElementById('poster').src = data.Poster;
         document.getElementById('genre').textContent = data.Genre;
         document.getElementById('plot').textContent = data.Plot;
-        document.getElementById('language').textContent = data.Language;
         
-        const imdbRating = data.Ratings && data.Ratings[0] ? data.Ratings[0].Value.split('/')[0] : 'N/A';
-        document.getElementById('imdb-rating').textContent = imdbRating;
+        // Update all ratings
+        updateRatings(data.Ratings);
         
         document.getElementById('release-date').textContent = data.Released;
         document.getElementById('directed-by').textContent = data.Director;
-        document.getElementById('written-by').textContent = data.Writer;
         document.getElementById('cast').textContent = data.Actors;
         document.getElementById('run').textContent = data.Runtime;
         document.getElementById('box-office').textContent = data.BoxOffice || 'N/A';
