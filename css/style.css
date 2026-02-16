@@ -87,11 +87,11 @@ body {
 /* Toast Notifications */
 .toast-container {
     position: fixed;
-    top: 90px;
+    bottom: 20px;
     right: 20px;
     z-index: 3000;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     gap: 12px;
     max-width: 400px;
     width: 100%;
@@ -107,7 +107,7 @@ body {
     gap: 12px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    animation: slideIn 0.3s ease-out;
+    animation: slideInBottom 0.3s ease-out;
     position: relative;
     overflow: hidden;
 }
@@ -192,6 +192,17 @@ body {
     animation: progress 3s linear;
 }
 
+@keyframes slideInBottom {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 @keyframes slideIn {
     from {
         transform: translateX(400px);
@@ -215,12 +226,68 @@ body {
 /* Mobile Toast */
 @media (max-width: 768px) {
     .toast-container {
-        top: 120px;
+        bottom: 10px;
         right: 10px;
         left: 10px;
         max-width: none;
     }
 }
+
+/* Similar Movies */
+.similar-movie-card {
+    position: relative;
+    aspect-ratio: 2/3;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(26, 26, 26, 0.8);
+}
+
+.similar-movie-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(238, 43, 52, 0.3);
+    border-color: rgba(238, 43, 52, 0.5);
+}
+
+.similar-movie-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.similar-movie-card:hover img {
+    transform: scale(1.05);
+}
+
+.similar-movie-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
+}
+
+.similar-movie-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 2px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.similar-movie-year {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
 
 
 /* Search History Dropdown */

@@ -29,7 +29,7 @@ function showToast(type, title, message, duration = 3000) {
     
     // Auto remove after duration
     setTimeout(() => {
-        toast.style.animation = 'slideIn 0.3s ease-out reverse';
+        toast.style.animation = 'slideInBottom 0.3s ease-out reverse';
         setTimeout(() => toast.remove(), 300);
     }, duration);
 }
@@ -212,6 +212,75 @@ function updateRatings(ratings) {
     });
 }
 
+// Fetch Similar Movies
+async function fetchSimilarMovies(movieTitle, genre) {
+    try {
+        // Extract first genre if multiple
+        const mainGenre = genre ? genre.split(',')[0].trim() : '';
+        
+        if (!mainGenre) return;
+        
+        // Search for movies in the same genre
+        const response = await fetch(`https://www.omdbapi.com/?s=${mainGenre}&type=movie&apikey=${api_key}`);
+        const data = await response.json();
+        
+        if (data.Response === "False" || !data.Search) {
+            return;
+        }
+        
+        // Filter out the current movie and take 4 random movies
+        const similarMovies = data.Search
+            .filter(movie => movie.Title.toLowerCase() !== movieTitle.toLowerCase())
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 4);
+        
+        displaySimilarMovies(similarMovies);
+        
+    } catch (error) {
+        console.error('Error fetching similar movies:', error);
+    }
+}
+
+// Display Similar Movies
+function displaySimilarMovies(movies) {
+    const container = document.getElementById('similar-movies-container');
+    const section = document.getElementById('similar-movies-section');
+    
+    if (!movies || movies.length === 0) {
+        section.classList.add('hidden');
+        return;
+    }
+    
+    container.innerHTML = '';
+    section.classList.remove('hidden');
+    
+    movies.forEach(movie => {
+        const card = document.createElement('div');
+        card.className = 'similar-movie-card';
+        
+        const posterUrl = movie.Poster !== 'N/A' 
+            ? movie.Poster 
+            : 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="300"><rect width="200" height="300" fill="%231a1a1a"/><text x="50%" y="50%" fill="%23666" text-anchor="middle" dy=".3em" font-size="14">No Poster</text></svg>';
+        
+        card.innerHTML = `
+            <img src="${posterUrl}" alt="${movie.Title}">
+            <div class="similar-movie-overlay">
+                <div class="similar-movie-title">${movie.Title}</div>
+                <div class="similar-movie-year">${movie.Year}</div>
+            </div>
+        `;
+        
+        card.addEventListener('click', () => {
+            document.getElementById('movie').value = movie.Title;
+            fetchData(movie.Title);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        container.appendChild(card);
+    });
+}
+
+
 
 
 // Fetch Movie Data
@@ -264,6 +333,9 @@ async function fetchData(movie) {
 
         // Show success toast
         showToast('success', 'Movie Loaded', `${data.Title} (${data.Year})`);
+
+        // Fetch similar movies
+        fetchSimilarMovies(data.Title, data.Genre);
 
         hideLoading();
 
