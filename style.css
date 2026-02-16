@@ -30,6 +30,12 @@ header{
 #search-bar-container{
     display: flex;
     margin-right: 75px;
+    align-items: center;
+}
+
+/* Search Wrapper for History Dropdown */
+.search-wrapper {
+    position: relative;
 }
 
 #search-button,#movie{
@@ -42,6 +48,11 @@ header{
 #movie{
     background-color: #414141;
     color: aliceblue;
+    width: 250px;
+}
+
+#movie:focus {
+    outline: 2px solid #00a8e1;
 }
 
 #search-button{
@@ -59,6 +70,87 @@ header{
 #search-button:active{
     background-color: rgb(98, 95, 95);
     color: aliceblue;
+}
+
+/* Search History Dropdown Styles */
+.history-dropdown {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 250px;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    overflow: hidden;
+}
+
+.history-dropdown.hidden {
+    display: none;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #1a1a1a;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+.history-header span {
+    color: #00a8e1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.clear-btn {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.clear-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ff6b6b;
+}
+
+#history-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#history-list li {
+    padding: 12px 15px;
+    color: aliceblue;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#history-list li:hover {
+    background-color: rgba(0, 168, 225, 0.2);
+    padding-left: 20px;
+}
+
+#history-list li:last-child {
+    border-bottom: none;
+}
+
+.no-history {
+    padding: 20px 15px;
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    font-size: 14px;
+    font-style: italic;
 }
 
 /* Loading Spinner Styles */

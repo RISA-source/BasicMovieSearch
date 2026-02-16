@@ -18,7 +18,17 @@
     <header>
         <h1>amazone</h1>
         <div id="search-bar-container">
-            <input type="text" placeholder="Movie..." value="Joker" id="movie">
+            <div class="search-wrapper">
+                <input type="text" placeholder="Movie..." value="Joker" id="movie" autocomplete="off">
+                <!-- Search History Dropdown -->
+                <div id="history-dropdown" class="history-dropdown hidden">
+                    <div class="history-header">
+                        <span>Recent Searches</span>
+                        <button id="clear-history" class="clear-btn">Clear</button>
+                    </div>
+                    <ul id="history-list"></ul>
+                </div>
+            </div>
             <button id="search-button">Search</button>
         </div>
     </header>

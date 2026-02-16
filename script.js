@@ -12,6 +12,70 @@ function hideLoading() {
     loader.classList.add('hidden');
 }
 
+// Search History Functions
+function getSearchHistory() {
+    const history = localStorage.getItem('movieSearchHistory');
+    return history ? JSON.parse(history) : [];
+}
+
+function saveToHistory(movieTitle) {
+    let history = getSearchHistory();
+    
+    // Remove if already exists (to move to top)
+    history = history.filter(item => item.toLowerCase() !== movieTitle.toLowerCase());
+    
+    // Add to beginning of array
+    history.unshift(movieTitle);
+    
+    // Keep only last 5 searches
+    history = history.slice(0, 5);
+    
+    // Save to localStorage
+    localStorage.setItem('movieSearchHistory', JSON.stringify(history));
+    
+    // Update display
+    displayHistory();
+}
+
+function displayHistory() {
+    const history = getSearchHistory();
+    const historyList = document.getElementById('history-list');
+    
+    historyList.innerHTML = '';
+    
+    if (history.length === 0) {
+        historyList.innerHTML = '<li class="no-history">No recent searches</li>';
+        return;
+    }
+    
+    history.forEach(movie => {
+        const li = document.createElement('li');
+        li.textContent = movie;
+        li.addEventListener('click', () => {
+            elements.movieName.value = movie;
+            hideHistoryDropdown();
+            fetchData(movie);
+        });
+        historyList.appendChild(li);
+    });
+}
+
+function clearHistory() {
+    localStorage.removeItem('movieSearchHistory');
+    displayHistory();
+}
+
+function showHistoryDropdown() {
+    const dropdown = document.getElementById('history-dropdown');
+    dropdown.classList.remove('hidden');
+    displayHistory();
+}
+
+function hideHistoryDropdown() {
+    const dropdown = document.getElementById('history-dropdown');
+    dropdown.classList.add('hidden');
+}
+
 async function fetchData(movie) {
     showLoading(); // Show spinner when fetch starts
     
@@ -31,6 +95,9 @@ async function fetchData(movie) {
             hideLoading(); // Hide spinner on error
             return;
         }
+
+        // Save successful search to history
+        saveToHistory(movie);
 
         const name = data.Title
         const postLink = data.Poster
@@ -95,12 +162,35 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchData('Joker');
 });
 
+// Show history dropdown when input is focused
+elements.movieName.addEventListener('focus', () => {
+    showHistoryDropdown();
+});
+
+// Hide history dropdown when clicking outside
+document.addEventListener('click', (event) => {
+    const searchWrapper = document.querySelector('.search-wrapper');
+    if (!searchWrapper.contains(event.target)) {
+        hideHistoryDropdown();
+    }
+});
+
+// Clear history button
+document.getElementById('clear-history').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (confirm('Clear all search history?')) {
+        clearHistory();
+    }
+});
+
+// Enter key search
 const inputField = document.getElementById('movie');
 inputField.addEventListener('keydown', function (event) {
     if (event.key === 'Enter') {
         console.log('Enter key pressed in input field');
         const movie = document.getElementById('movie').value.trim();
         if (movie) {
+            hideHistoryDropdown();
             fetchData(movie)
         } else {
             alert('Please enter a movie name.');
@@ -108,9 +198,11 @@ inputField.addEventListener('keydown', function (event) {
     }
 });
 
+// Search button click
 elements.searchButton.addEventListener('click', () => {
     const movie = document.getElementById('movie').value.trim();
     if (movie) {
+        hideHistoryDropdown();
         fetchData(movie)
     } else {
         alert('Please enter a movie name.');
